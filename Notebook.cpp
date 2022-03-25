@@ -14,8 +14,17 @@ using namespace ariel;
 
 namespace ariel{
 
-    //cunstructor
-    Notebook::Notebook(){};
+    //cunstructor - initialize the note book
+    Notebook::Notebook(int page, int row, int col){
+        for(unsigned int i = 0; i<page; i++){
+            for(unsigned int j = 0; j<row; j++){
+                for(unsigned int k = 0; k<col; k++){
+                   //notebook.insert<page<row<col,DEAFULT_CHAR>>>;
+                   notebook[page][row][col]=DEAFULT_CHAR;
+                }
+            }
+        }
+    }
 
 
     /*
@@ -48,20 +57,21 @@ namespace ariel{
      }
     void Notebook:: show(unsigned int page){
         //here we pass over the row (line)
-        for (int i = 0; i < row; i++)
+        for (unsigned int i = this->minRow; i <= this->maxRow; i++) 
         {
             // here we pass over the collumn
-            for (int j = 0; j < col; j++)
+            for (unsigned int j = this->minCol; j <= this->maxCol; j++) 
             {
-                if(notebook[i][j]!=0)
-                    cout << notebook[i][j];
+                if(notebook[page][i][j]!=0)
+                    cout << notebook[page][i][j];
                 else{
                 cout<<'_';
                 }
+                
+                cout << this->notebook[page][i][j];
             }
-            cout<<endl;
+            cout << endl;
         }
-
     
     }
  }
