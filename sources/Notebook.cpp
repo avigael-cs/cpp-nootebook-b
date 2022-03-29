@@ -20,7 +20,7 @@ namespace ariel{
 
 
     ariel::Notebook::Notebook() {
-        //don't need
+        
     }
     void check(int page, int row, int col, ariel::Direction dir, int num)
     {
