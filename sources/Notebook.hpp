@@ -26,7 +26,7 @@ namespace ariel
             *You need single element access i.e. no traversal.
             */
            //our book (page,row, col = char)
-            unordered_map< int, unordered_map< int, vector<char>>> notebook;
+            unordered_map< int, unordered_map< int, char[100]>> notebook;
             
 
 

@@ -24,7 +24,7 @@ namespace ariel{
     }
     void check(int page, int row, int col, ariel::Direction dir, int num)
     {
-        if(page <= 0 || row < 0 || col < 0 || num < 0 || col>=100){
+        if(page <= 0 || row < 0 || col < 0 || num < 0 || col>100){
             throw invalid_argument("Bad Inputs - your page, row and col need to be positive and col need to be smaller than 100."); 
          }
         
@@ -55,68 +55,43 @@ namespace ariel{
                     throw invalid_argument("Error - bad input");
                 }
         }
-        //notebook[page].write(page, row, col, dir, msg);
-        if (dir == Direction::Horizontal) {       
-            check(page, row, col, dir, tmp);   
-            //end() – Returns an iterator to the theoretical element that follows the last element in the map.
-            //map find()-Returns an iterator to the element with key-value ‘g’ in the map if found, else returns the iterator to end.           
-            //if find = end it means we didnt found the page and we need to create one
-            if(this->notebook.find(page) == this->notebook.end())
-            {
-                //create page
-                vector <char> vchar(mea, DEFAULT_CHAR);              
-                this->notebook[page][row] = vchar;
-            } 
-            //at() function is used to return the reference to the element associated with the key k.
-            //check if row is in the map
-            else if(this->notebook.at(page).find(row) == this->notebook.at(page).end()){ 
-                //then...create one
-                vector <char> vchar(mea, DEFAULT_CHAR);              
-                this->notebook[page][row] = vchar;
-            }
-            //now - check if we can write
-            for(size_t i=0; i<tmp; i++){ 
-
-                if(this->notebook.at(page).at(row).at((unsigned int)col+i) != DEFAULT_C)//|| this->notebook.at(page).at(row).at((unsigned int)col+i) == DEFAULT_D || this->notebook.at(page).at(row).at((unsigned int)col+i) == DEFAULT_E){
-                {
+        for (int i=0; i<tmp; i++){
+            //notebook[page].write(page, row, col, dir, msg);
+            if (dir == Direction::Horizontal) {       
+                check(page, row, col, dir, tmp);   
+                //end() – Returns an iterator to the theoretical element that follows the last element in the map.
+                //map find()-Returns an iterator to the element with key-value ‘g’ in the map if found, else returns the iterator to end.           
+                //if find = end it means we didnt found the page and we need to create one
+                
+                //now - check if we can write
+                if(this->notebook[page][row][col+i] == 0){
+                    this->notebook[page][row][col+i] = msg.at((size_t)i);
+                }
+                else if(this->notebook[page][row][(size_t)col+(size_t)i] == DEFAULT_C)//|| this->notebook.at(page).at(row).at((unsigned int)col+i) == DEFAULT_D || this->notebook.at(page).at(row).at((unsigned int)col+i) == DEFAULT_E){
+                    {
+                    this->notebook[page][row][(size_t)col+(size_t)i] = msg.at((size_t)i);
+                    }
+                    //if evrething is ok then we can write
+                else{  //now - we can write
                     throw invalid_argument("Error - already written/erased erea");
                 }
             }
-            //if evrething is ok then we can write
-            for(size_t i=0; i<tmp; i++){  //now - we can write
-                this->notebook.at(page).at(row).at((unsigned int)col+i) = msg.at(i);
-            }
-        }
-        else{ //direction = Vertical
-            if(page <= 0 || row < 0 || col < 0 || tmp < 0 ||col>100){
-                throw invalid_argument("Bad Inputs - your page, row and col need to be positive and col need to be smaller than 100."); 
-            }
-            //check if page is not in the map
-            if(this->notebook.find(page) == this->notebook.end()){ 
-                //create page
-                vector <char> vchar(mea, DEFAULT_CHAR);              
-                this->notebook[page][row] = vchar;
-            }
-            for(int i=0; i<tmp; i++){
-                //now check if row is in the page - or if we have enough
-                if(this->notebook.at(page).find(row + i) == this->notebook.at(page).end()){ 
-                    //if we dont have enough - create
-                    vector <char> vchar(mea, DEFAULT_CHAR);              
-                    this->notebook[page][row] = vchar;
+            else{ //direction = Vertical
+                    if(page <= 0 || row < 0 || col < 0 ||col>100){
+                        throw invalid_argument("Bad Inputs - your page, row and col need to be positive and col need to be smaller than 100."); 
+                    }
+                    //if we have a row check if we can write
+                    if(this->notebook[page][(size_t)row+(size_t)i][(size_t)col] == 0){
+                        this->notebook[page][row+i][(size_t)col] = msg.at((size_t)i);
+                    }
+                    else if(this->notebook[page][row+i][(size_t)col] == DEFAULT_C)//|| this->notebook.at(page).at(row+i).at((size_t)col) == DEFAULT_D || this->notebook.at(page).at(row+i).at((size_t)col) == DEFAULT_E){
+                        {    
+                            this->notebook[page][row+i][(size_t)col] = msg.at((size_t)i);
+                        }
+                    else{  
+                        throw invalid_argument("Error - already written/erased erea");
+                    }
                 }
-            }
-            for( int i=0; i<tmp; i++)
-            {
-                //if we have a row check if we can write
-                if(this->notebook.at(page).at(row+i).at((size_t)col) != DEFAULT_C)//|| this->notebook.at(page).at(row+i).at((size_t)col) == DEFAULT_D || this->notebook.at(page).at(row+i).at((size_t)col) == DEFAULT_E){
-                {    
-                    throw runtime_error("Error - already written/erased erea");
-                }
-            }
-            //now - we can write
-            for(int i=0; i<tmp; i++){  
-                this->notebook.at(page).at(row+i).at((size_t)col) = msg.at((size_t)i);
-            }
         }
     }
 
@@ -138,13 +113,13 @@ namespace ariel{
                     str += DEFAULT_C;
                 }
                 else{
-                str += this->notebook[page][row].at((size_t)i);
+                str += this->notebook[page][row][i];
                 }
             }
         }
         //dir = Vertical
         else{ 
-            if(page <= 0 || row < 0 || col < 0 || num < 0 ||col>100){
+            if(page <= 0 || row < 0 || col < 0 || num < 0 ||col>=100){
             throw invalid_argument("Bad Inputs - your page, row and col need to be positive and col need to be smaller than 100."); 
             }
             tmp = row+num; //where we want to star reading.
@@ -159,7 +134,7 @@ namespace ariel{
                 }
                 //if we can read
                 else{
-                    str += this->notebook.at(page).at(i).at(unsigned(col));
+                    str += this->notebook[page][+i][(size_t)col];
                     
                 }
             }
@@ -169,21 +144,25 @@ namespace ariel{
 
 
     void Notebook::erase(int page, int row, int col, Direction dir, int num ){
-        check(page, row, col, dir, num);
-        int tmp;
-        if (dir==Direction::Horizontal)
-        {
-            tmp = col+num; //where we want to star reading.
-            for (int i = col; i < tmp; i++)
-                {
-                this->notebook[page][row].at((size_t)i)=ERASE_CHAR;
-                }
+        if(dir == Direction::Horizontal&& (col>=100 || col+num>100)){
+            throw invalid_argument("Bad Inputs - your page, row and col need to be positive and col need to be smaller than 100."); 
         }
-        else{ //dir = Vertical
-            tmp = row+num; //where we want to star reading.
-            for (int i = row; i < tmp; i++)
-                {
-                    this->notebook[page][i].at((size_t)col)=ERASE_CHAR;
+        else if(page <= 0 || row < 0 || col < 0 || num < 0){
+            throw invalid_argument("Bad Inputs - your page, row and col need to be positive and col need to be smaller than 100."); 
+            }
+        else if (dir == Direction::Vertical && (col>=100)){
+            throw invalid_argument("Bad Inputs - your page, row and col need to be positive and col need to be smaller than 100."); 
+        }
+        
+        //int tmp;
+        for (int i = 0; i < num; i++)
+        {
+            if (dir==Direction::Horizontal)
+            {
+                this->notebook[page][row][col+i]=ERASE_CHAR;
+            }
+            else{ //dir = Vertical
+                this->notebook[page][row+i][col]=ERASE_CHAR;
                 }
         }
      }
