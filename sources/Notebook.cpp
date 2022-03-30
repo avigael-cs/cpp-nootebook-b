@@ -37,6 +37,8 @@ namespace ariel{
             }
         }
     }
+
+    
     /*
     page - represents wich page we want to write our text.
     row - represents wich line we want to write our text.
@@ -54,6 +56,10 @@ namespace ariel{
                 {
                     throw invalid_argument("Error - bad input");
                 }
+                if( msg[(unsigned int)i] == '~')
+                {
+                    throw invalid_argument("Error - bad input");   
+                }
         }
         for (int i=0; i<tmp; i++){
             //notebook[page].write(page, row, col, dir, msg);
@@ -62,31 +68,37 @@ namespace ariel{
                 //end() – Returns an iterator to the theoretical element that follows the last element in the map.
                 //map find()-Returns an iterator to the element with key-value ‘g’ in the map if found, else returns the iterator to end.           
                 //if find = end it means we didnt found the page and we need to create one
+                if (notebook[page][row][col+i] == '~'){
+                    throw invalid_argument("Error - already written/erased erea");
+                }
                 
                 //now - check if we can write
                 if(this->notebook[page][row][col+i] == 0){
-                    this->notebook[page][row][col+i] = msg.at((size_t)i);
+                    this->notebook[page][row][col+i] = msg[(size_t)i];
                 }
                 else if(this->notebook[page][row][(size_t)col+(size_t)i] == DEFAULT_C)//|| this->notebook.at(page).at(row).at((unsigned int)col+i) == DEFAULT_D || this->notebook.at(page).at(row).at((unsigned int)col+i) == DEFAULT_E){
                     {
-                    this->notebook[page][row][(size_t)col+(size_t)i] = msg.at((size_t)i);
+                    this->notebook[page][row][(size_t)col+(size_t)i] = msg[(size_t)i];
                     }
-                    //if evrething is ok then we can write
-                else{  //now - we can write
+                    
+                else{  
                     throw invalid_argument("Error - already written/erased erea");
                 }
             }
             else{ //direction = Vertical
-                    if(page <= 0 || row < 0 || col < 0 ||col>100){
+                    if(page < 0 || row <= 0 || col <= 0 ||col>100){
                         throw invalid_argument("Bad Inputs - your page, row and col need to be positive and col need to be smaller than 100."); 
+                                        }
+                    if (notebook[page][row+i][col] == '~'){
+                        throw invalid_argument("Error - already written/erased erea");
                     }
                     //if we have a row check if we can write
                     if(this->notebook[page][(size_t)row+(size_t)i][(size_t)col] == 0){
-                        this->notebook[page][row+i][(size_t)col] = msg.at((size_t)i);
+                        this->notebook[page][row+i][(size_t)col] = msg[(size_t)i];
                     }
                     else if(this->notebook[page][row+i][(size_t)col] == DEFAULT_C)//|| this->notebook.at(page).at(row+i).at((size_t)col) == DEFAULT_D || this->notebook.at(page).at(row+i).at((size_t)col) == DEFAULT_E){
                         {    
-                            this->notebook[page][row+i][(size_t)col] = msg.at((size_t)i);
+                            this->notebook[page][row+i][(size_t)col] = msg[(size_t)i];
                         }
                     else{  
                         throw invalid_argument("Error - already written/erased erea");
@@ -147,10 +159,10 @@ namespace ariel{
         if(dir == Direction::Horizontal&& (col>=100 || col+num>100)){
             throw invalid_argument("Bad Inputs - your page, row and col need to be positive and col need to be smaller than 100."); 
         }
-        else if(page <= 0 || row < 0 || col < 0 || num < 0){
+        if(page <= 0 || row < 0 || col < 0 || num < 0){
             throw invalid_argument("Bad Inputs - your page, row and col need to be positive and col need to be smaller than 100."); 
             }
-        else if (dir == Direction::Vertical && (col>=100)){
+        if (dir == Direction::Vertical && (col>=100)){
             throw invalid_argument("Bad Inputs - your page, row and col need to be positive and col need to be smaller than 100."); 
         }
         

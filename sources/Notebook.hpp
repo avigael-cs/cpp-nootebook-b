@@ -33,11 +33,13 @@ namespace ariel
         public:
             Notebook();
             void arg_check(int page, int row, int column, int num, ariel::Direction dir);
+            //void checkw(int page, int row, int col, ariel::Direction dir, int num);
             Notebook(int page, int row, int col);
             void write(int page, int row , int col, Direction dir ,  string const &msg);
             std::string read(int page, int row, int col, Direction dir, int num);
             void erase(int page, int row, int col, Direction dir, int num );
             void show(int page);
+            ~Notebook(){}    
             
             
     };
